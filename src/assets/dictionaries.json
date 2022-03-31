@@ -1,0 +1,17 @@
+{
+	"dictionaries": [
+		{
+			"id": "elexis-zrcsazu-jsv",
+			"title": "elexis ZRC SAZU JSV",
+			"language": "sl",
+			"hasLinks": true
+		},
+		{
+			"id": "elexis-zrcsazu-pletersnik",
+			"title": "elexis ZRCSAZU Pletersnik",
+			"language": "sl",
+			"hasLinks": true
+		}
+	],
+	"success": true
+}

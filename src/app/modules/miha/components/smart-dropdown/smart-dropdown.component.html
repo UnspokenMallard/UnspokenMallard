@@ -1,0 +1,55 @@
+<button [ngClass]="{'text-white bg-blue is-opened': isOpen, 'text-blue': !isOpen, 'font-bold': selected(items).length > 0}"
+        class="rounded uppercase text-sm leading-none px-3 py-2"
+        cdkOverlayOrigin
+        #trigger="cdkOverlayOrigin" (click)="toggleMenu()">
+  {{ title }}
+  <span *ngIf="selected(items).length">/ {{ selected(items).length }}</span>
+  <fa-icon class="text-sm ml-3" [icon]="!isOpen ? faChevronDown : faChevronUp"></fa-icon>
+</button>
+
+<ng-template
+  cdkConnectedOverlay
+  (backdropClick)="close()"
+  [cdkConnectedOverlayHasBackdrop]="true"
+  cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+  [cdkConnectedOverlayOrigin]="trigger"
+  [cdkConnectedOverlayOpen]="isOpen"
+  [cdkConnectedOverlayOffsetY]=13
+>
+  <div class="smart-dropdown w-fit max-w-full shadow-xl rounded-b bg-white dark:bg-midnight">
+    <div class="px-6 py-2 border-b border-lightgray dark:border-darkgray/60 relative">
+      <div
+        class="absolute text-sm text-lightgray pointer-events-none top-1/2 transform -translate-y-1/2">
+        <fa-icon [icon]="faLookup"></fa-icon>
+      </div>
+      <div class="w-full ml-5 pr-2">
+        <input type="text"
+               class="text-sm w-full p-2 placeholder:text-lightgray dark:text-white bg-transparent"
+               [placeholder]="searchPlaceholder" [(ngModel)]="q">
+      </div>
+    </div>
+
+    <div class="border-b flex flex-row flex-wrap px-6 py-3 border-b border-lightgray dark:border-darkgray/60"
+         *ngIf="selected(items).length">
+      <ng-container *ngFor="let item of selected(items)">
+        <button class="text-blue text-xs mr-3" (click)="toggleItem(item)">
+          {{item.label}}
+          <fa-icon [icon]="faMarks" class="ml-1"></fa-icon>
+        </button>
+      </ng-container>
+    </div>
+
+    <div class="py-5 px-6 flex flex-col overflow-auto" style="max-height: 300px">
+      <ng-container *ngFor="let item of filter(items)">
+        <button (click)="toggleItem(item)" class="text-left text-sm mb-4 last:mb-0">
+          <fa-icon [icon]="!item.selected ? faSquare : faSquareCheck"
+                   [ngClass]="{'text-blue': item.selected, 'text-lightgray': !item.selected}" class="mr-3"></fa-icon>
+          <span
+            [ngClass]="{'text-blue': item.selected, 'text-black dark:text-lightgray': !item.selected}">{{ item.label }}</span>
+        </button>
+      </ng-container>
+    </div>
+  </div>
+
+</ng-template>
+

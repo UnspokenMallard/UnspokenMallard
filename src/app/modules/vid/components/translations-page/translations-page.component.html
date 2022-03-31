@@ -1,0 +1,41 @@
+<div class="py-8 bg-lavender dark:bg-marine bg-icon-white dark:bg-icon-darkblue min-h-full flex flex-col">
+  <div class="flex flex-col flex-1 mb-10">
+    <app-header class="container"></app-header>
+
+    <div #stickyArea [ngClass]="{'bg-lavender dark:bg-marine': shrink}" class="lg:sticky top-0">
+      <div class="container">
+        <div [ngClass]="{'lg:my-3': shrink}" class="lg:w-3/4 xl:w-1/2 mt-8 mb-10 mx-auto">
+          <app-search-box [shrink]="shrink"></app-search-box>
+        </div>
+
+        <div [ngClass]="{'lg:mb-0': shrink}" class="grid lg:grid-cols-2 lg:gap-8 my-6">
+          <div
+            class="lg:hidden bg-blue text-white rounded uppercase text-sm leading-none px-3 py-2 w-full text-left">
+            <fa-icon [icon]="faFilter" class="mr-2"></fa-icon>
+            Filters
+          </div>
+          <app-filters [dictionaries]="sourceDictionaries"></app-filters>
+          <app-filters [languages]="languages"
+                       [dictionaries]="targetDictionaries"
+                       [similarities]="similarities"
+                       [showConceptViewToggle]="true"
+                       (conceptViewToggled)="conceptView = $event">
+          </app-filters>
+        </div>
+      </div>
+    </div>
+
+    <ng-container *ngFor="let items of translations; let last = last">
+      <div class="container">
+        <app-search-result [items]="items" [conceptView]="conceptView"></app-search-result>
+
+        <div class="grid lg:grid-cols-2 lg:gap-8 my-6" *ngIf="!last">
+          <hr class="border-lightgray">
+          <hr class="border-lightgray hidden lg:block">
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+  <app-footer class="container"></app-footer>
+</div>

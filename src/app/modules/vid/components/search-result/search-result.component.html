@@ -1,0 +1,31 @@
+<div class="grid lg:grid-cols-2 lg:gap-8">
+  <div>
+    <app-translate-card *ngFor="let translation of items.source" [translation]="translation">
+    </app-translate-card>
+  </div>
+
+  <div>
+    <div class="bg-blue rounded-lg text-sm text-white p-3 mb-4" *ngIf="conceptView">
+      <ul class="flex">
+        <li class="mr-2">ID e wn-04387051-n</li>
+        <li class="mr-2">/</li>
+        <li><a href="#" class="underline">WordNet</a></li>
+      </ul>
+    </div>
+
+    <div [ngClass]="{'flex flex-col': true, 'lg:ml-6': conceptView}">
+      <app-translate-card
+        *ngFor="let translation of items.target.slice(0, counter)"
+        [translation]="translation">
+      </app-translate-card>
+
+      <div class="self-end">
+        <button *ngIf="counter < items.target.length"
+                class="px-3 py-2 rounded-lg bg-blue text-white text-xs uppercase"
+                (click)="showMore()">
+          Show more
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

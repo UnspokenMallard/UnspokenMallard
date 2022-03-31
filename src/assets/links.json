@@ -1,0 +1,37 @@
+{
+	"links": [
+		{
+			"sourceDict": "elexis-zrcsazu-jsv",
+			"sourceHeadword": "miza ",
+			"sourceID": 4207,
+			"sourceSense": "1",
+			"sourceURL": "https://lexonomy.elex.is/elexis-zrcsazu-jsv/4207",
+			"targetDict": "elexis-zrcsazu-pletersnik",
+			"confidence": 1.0,
+			"targetLang": "sl",
+			"targetDictConcept": false,
+			"targetHeadword": "miza ",
+			"targetID": 33818,
+			"targetURL": "https://lexonomy.elex.is/elexis-zrcsazu-pletersnik/33818",
+			"sourceDictTitle": "Dictionary of the Slovenian Language in the Works of Janez Svetokriški",
+			"targetDictTitle": "Slovenian-German Dictionary of Maks Pleteršnik (1894-1895)"
+		},
+		{
+			"sourceDict": "elexis-zrcsazu-pletersnik",
+			"sourceHeadword": "miza ",
+			"sourceID": 33818,
+			"sourceSense": "1",
+			"sourceURL": "https://lexonomy.elex.is/elexis-zrcsazu-pletersnik/33818",
+			"targetDict": "elexis-zrcsazu-jsv",
+			"confidence": 1.0,
+			"targetLang": "sl",
+			"targetDictConcept": false,
+			"targetHeadword": "miza ",
+			"targetID": 4207,
+			"targetURL": "https://lexonomy.elex.is/elexis-zrcsazu-jsv/4207",
+			"sourceDictTitle": "Slovenian-German Dictionary of Maks Pleteršnik (1894-1895)",
+			"targetDictTitle": "Dictionary of the Slovenian Language in the Works of Janez Svetokriški"
+		}
+	],
+	"success": true
+}
