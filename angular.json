@@ -1,5 +1,8 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": false
+  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
@@ -20,6 +23,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": ["ngx-store"],
             "outputPath": "dist/elexilink",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -70,15 +74,21 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "host": "192.168.1.161",
+            "port": 8080
+          },
           "configurations": {
             "production": {
-              "browserTarget": "elexilink:build:production"
+              "browserTarget": "elexilink:build:production",
+              "proxyConfig": "./proxy.conf.js"
             },
             "development": {
-              "browserTarget": "elexilink:build:development"
+              "browserTarget": "elexilink:build:development",
+              "proxyConfig": "./proxy.conf.js"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "production"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
