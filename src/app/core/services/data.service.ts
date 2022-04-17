@@ -6,8 +6,8 @@ import isEmpty from "lodash-es/isEmpty";
 import set from "lodash-es/set";
 import size from "lodash-es/size";
 import { LocalStorage, LocalStorageService } from "ngx-store";
-import { forkJoin, from, iif, Observable, of, throwError } from "rxjs";
-import { catchError, map, mergeMap, concatMap, bufferCount, tap, filter } from "rxjs/operators";
+import { forkJoin, iif, Observable, of, throwError } from "rxjs";
+import { catchError, map, mergeMap, concatMap, bufferCount, tap } from "rxjs/operators";
 import { ENVIRONMENT, Environment } from "src/app/app.module";
 import { UserService } from "./user.service";
 import { UtilsService } from "./utils.service";
@@ -145,7 +145,7 @@ export class DataService implements Resolve<[Core.SelectableItem<Language.Result
         })
       );
     }
-    return this.httpClient.post<Dictionary.ListResults>("/api/listDict", {...parameters, ...this.defaultParameters}).pipe(
+    return this.httpClient.post<Dictionary.ListResults>(this.apiUrl + "/api/listDict", {...parameters, ...this.defaultParameters}).pipe(
       map(({success, dictionaries, cached = false}) => {
         let results = success ? dictionaries : [];
         if (cached && results.length > 0 && !this.utils.isObjectEmpty(parameters)) {
@@ -236,7 +236,7 @@ export class DataService implements Resolve<[Core.SelectableItem<Language.Result
       }) : this.languages;
       return of(this.languages);
     }
-    return this.httpClient.post<Language.ListResults>("/api/listLang", this.defaultParameters ).pipe(
+    return this.httpClient.post<Language.ListResults>(this.apiUrl + "/api/listLang", this.defaultParameters ).pipe(
       map((response) => {
         const {success, languages} = response as unknown as Language.ListResults
         return success ? languages.map((item) => {
@@ -327,7 +327,7 @@ export class DataService implements Resolve<[Core.SelectableItem<Language.Result
 
   private fetchLinks$(parameters: Link.Parameters): Observable<Link.RawResult[]> {
     return this.httpClient
-      .post<Link.ListResults>("/api/listLinks", {
+      .post<Link.ListResults>(this.apiUrl + "/api/listLinks", {
         ...parameters,
         ...this.defaultParameters,
       })

@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   api: {
+    url: "",
     email: "rambousek+elexis@gmail.com", // rambousek+elexis@gmail.com
     key: "GXCQJ6S2FZUATM5Z2S0MGZ7XOMXKUFNP", // GXCQJ6S2FZUATM5Z2S0MGZ7XOMXKUFNP
   },
