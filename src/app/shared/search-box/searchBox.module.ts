@@ -5,6 +5,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SearchBoxComponent } from "./search-box.component";
+import { SmartDropdownModule } from "../smart-dropdown/smartDropdown.module";
 import { LanguagePickerModule } from "../language-picker/languagePicker.module";
 
 @NgModule({
@@ -17,6 +18,7 @@ import { LanguagePickerModule } from "../language-picker/languagePicker.module";
     FormsModule,
     ReactiveFormsModule,
     LanguagePickerModule,
+    SmartDropdownModule,
     RouterModule,
   ],
 })

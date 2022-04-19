@@ -4,12 +4,10 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { DataService } from "../core/services/data.service";
-import { UserService } from "../core/services/user.service";
 import { FiltersModule } from "../shared/filters/filters.module";
 import { FooterNavModule } from "../shared/footer-nav/footerNav.module";
 import { FooterModule } from "../shared/footer/footer.module";
 import { HeaderModule } from "../shared/header/header.module";
-import { LanguagePickerModule } from "../shared/language-picker/languagePicker.module";
 import { SearchBoxModule } from "../shared/search-box/searchBox.module";
 import { SearchResultModule } from "../shared/search-result/searchResult.module";
 import { SmartDropdownModule } from "../shared/smart-dropdown/smartDropdown.module";
@@ -37,12 +35,11 @@ const routes: Routes = [
     FooterModule,
     FiltersModule,
     SearchBoxModule,
-    LanguagePickerModule,
     SearchResultModule,
     HttpClientModule,
   ],
   exports: [],
   declarations: [HomeComponent],
-  providers: [DataService, UserService],
+  providers: [DataService],
 })
 export class HomeModule {}

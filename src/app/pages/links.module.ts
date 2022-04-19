@@ -6,7 +6,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { DataService } from "../core/services/data.service";
-import { UserService } from "../core/services/user.service";
 import { FiltersModule } from "../shared/filters/filters.module";
 import { FooterNavModule } from "../shared/footer-nav/footerNav.module";
 import { FooterModule } from "../shared/footer/footer.module";
@@ -47,6 +46,6 @@ const routes: Routes = [
   ],
   exports: [],
   declarations: [LinksComponent],
-  providers: [DataService, UserService ],
+  providers: [DataService ],
 })
 export class LinksModule {}

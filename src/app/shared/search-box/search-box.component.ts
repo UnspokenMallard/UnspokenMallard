@@ -3,7 +3,6 @@ import {faSearch, faTimes} from "@fortawesome/free-solid-svg-icons";
 import {FormBuilder} from "@angular/forms";
 import {ActivatedRoute, NavigationExtras, Router} from "@angular/router";
 import { DataService } from "src/app/core/services/data.service";
-import { WINDOW } from "src/app/core/services/window.service";
 
 @Component({
   selector: 'search-box',
@@ -27,7 +26,7 @@ export class SearchBoxComponent implements OnInit, AfterViewInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private data: DataService,
+    public data: DataService,
     private router: Router,
     private route: ActivatedRoute,
   ) {

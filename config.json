@@ -9,7 +9,7 @@
   },
   "testing": {
     "useCache": true,
-    "cacheRefreshRate": 60,
+    "cacheRefreshRate": 43200,
     "clientUrl": "",
     "serverUrl": "https://lexonomy.elex.is",
     "email": "rambousek+elexis@gmail.com",

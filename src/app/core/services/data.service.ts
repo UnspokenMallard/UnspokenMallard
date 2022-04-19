@@ -9,7 +9,6 @@ import { LocalStorage, LocalStorageService } from "ngx-store";
 import { forkJoin, iif, Observable, of, throwError } from "rxjs";
 import { catchError, map, mergeMap, concatMap, bufferCount, tap } from "rxjs/operators";
 import { ENVIRONMENT, Environment } from "src/app/app.module";
-import { UserService } from "./user.service";
 import { UtilsService } from "./utils.service";
 
 enum Origin {
@@ -26,6 +25,7 @@ export class DataService implements Resolve<[Core.SelectableItem<Language.Result
   targetLanguage!: string;
   targetDict!: string;
   similarity!: string;
+  sourceLanguages: Core.SelectableItem<Language.Result>[] = [];
   targetLanguages: Core.SelectableItem<Language.Result>[] = [];
   @LocalStorage() private languages: Core.SelectableItem<Language.Result>[] = [];
   @LocalStorage() private dictionaries: Core.SelectableItem<Dictionary.Result>[] = [];
@@ -37,7 +37,6 @@ export class DataService implements Resolve<[Core.SelectableItem<Language.Result
 
   constructor(
     private httpClient: HttpClient,
-    private userService: UserService,
     private utils: UtilsService,
     private localStorage: LocalStorageService,
     private route: ActivatedRoute,
@@ -229,9 +228,13 @@ export class DataService implements Resolve<[Core.SelectableItem<Language.Result
 
   listLanguages$(route: ActivatedRouteSnapshot): Observable<Core.SelectableItem<Language.Result>[]> {
     if (this.languages.length > 0) {
-      const {targetLanguage} = route.queryParams;
+      const {targetLanguage, sourceLanguage} = route.queryParams;
       this.targetLanguages = !!targetLanguage ? this.languages.map((item) => {
         item.selected = item.value.code === targetLanguage;
+        return item;
+      }) : this.languages;
+      this.sourceLanguages = !!sourceLanguage ? this.languages.map((item) => {
+        item.selected = item.value.code === sourceLanguage;
         return item;
       }) : this.languages;
       return of(this.languages);
@@ -340,17 +343,9 @@ export class DataService implements Resolve<[Core.SelectableItem<Language.Result
   }
 
   private get defaultParameters(): Core.Parameters {
-    if (this.userService.isLogged()) {
-      const info = this.userService.profile as User.Information;
-      return {
-        email: info.email,
-        apikey: info.apiKey,
-      };
-    } else {
-      return {
-        email: this.email,
-        apikey: this.apikey
-      };
-    }
+    return {
+      email: this.email,
+      apikey: this.apikey
+    };
   }
 }
