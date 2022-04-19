@@ -43,9 +43,9 @@ export class DataService implements Resolve<[Core.SelectableItem<Language.Result
     private route: ActivatedRoute,
     @Inject(ENVIRONMENT) environment: Environment,
   ) {
-    this.apiUrl = environment?.api?.url ?? "";
+    this.apiUrl = environment?.api?.clientUrl ?? "";
     this.email = environment?.api?.email ?? "";
-    this.apikey = environment?.api?.key ?? "";
+    this.apikey = environment?.api?.apiKey ?? "";
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<[Core.SelectableItem<Language.Result>[], Link.Result[], Core.SelectableItem<Dictionary.Result>[]]> {

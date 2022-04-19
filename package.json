@@ -3,11 +3,13 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "node server.js",
+    "start": "cross-env CONFIG=testing node server.js",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
+    "watch:test": "ng build --watch --configuration testing",
+    "watch:prod": "ng build --watch --configuration production",
     "test": "ng test",
-    "heroku-postbuild": "ng build --configuration production"
+    "heroku-postbuild": "ng build --configuration testing"
   },
   "engines": {
     "node": "16.13.2",
@@ -32,6 +34,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.1.0",
     "@fortawesome/free-solid-svg-icons": "^6.1.0",
     "body-parser": "^1.20.0",
+    "cross-env": "^7.0.3",
     "express": "^4.17.3",
     "lodash-es": "^4.17.21",
     "lodash.get": "^4.4.2",

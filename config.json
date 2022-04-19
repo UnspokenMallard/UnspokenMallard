@@ -1,0 +1,26 @@
+{
+  "production": {
+    "useCache": false,
+    "cacheRefreshRate": 60,
+    "clientUrl": "https://lexonomy.elex.is",
+    "serverUrl": "",
+    "email": "rambousek+elexis@gmail.com",
+    "apiKey": "GXCQJ6S2FZUATM5Z2S0MGZ7XOMXKUFNP"
+  },
+  "testing": {
+    "useCache": true,
+    "cacheRefreshRate": 60,
+    "clientUrl": "",
+    "serverUrl": "https://lexonomy.elex.is",
+    "email": "rambousek+elexis@gmail.com",
+    "apiKey": "GXCQJ6S2FZUATM5Z2S0MGZ7XOMXKUFNP"
+  },
+  "development": {
+    "useCache": true,
+    "cacheRefreshRate": 60,
+    "clientUrl": "",
+    "serverUrl": "",
+    "email": "rambousek+elexis@gmail.com",
+    "apiKey": "GXCQJ6S2FZUATM5Z2S0MGZ7XOMXKUFNP"
+  }
+}

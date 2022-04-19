@@ -11,9 +11,10 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 export interface Environment {
   production: boolean;
   api: {
-    url: string;
+    clientUrl: string;
+    serverUrl: string;
     email: string;
-    key: string;
+    apiKey: string;
   };
 }
 
