@@ -2,6 +2,7 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import get from "lodash-es/get";
+import includes from "lodash-es/includes";
 import { LocalStorage } from 'ngx-store';
 import { DataService } from "src/app/core/services/data.service";
 
@@ -66,19 +67,23 @@ export class LinksComponent {
     observer.observe(this.stickyArea.nativeElement);
   }
 
-  public emitSourceDictionarySearch(items: Core.SelectableItem<Dictionary.Result>[]) {
+  public emitSourceDictionarySearch(items: Dictionary.Result[]) {
     this.data.sourceDict = get(items, "[0].id");
   }
 
-  public emitLanguageSearch(items: Core.SelectableItem<Language.Result>[]) {
-    this.data.targetLanguage = get(items, "[0].code");
+  public emitLanguageSearch(items: Language.Result[]) {
+    const codes = items.map(({code}) => code);
+    for (const targetLanguage of this.data.targetLanguages) {
+      targetLanguage.selected = includes(codes, targetLanguage.value.code);
+    }
+    this.data.targetLanguage = codes[0];
   }
 
-  public emitTargetDictionarySearch(items: Core.SelectableItem<Dictionary.Result>[]) {
+  public emitTargetDictionarySearch(items: Dictionary.Result[]) {
     this.data.targetDict = get(items, "[0].id");
   }
 
-  public emitSimilaritySearch(items: Core.SelectableItem<Similarity.Result>[]) {
+  public emitSimilaritySearch(items: Similarity.Result[]) {
     this.data.similarity = get(items, "[0]");
   }
 

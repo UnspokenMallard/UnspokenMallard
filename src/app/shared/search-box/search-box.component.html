@@ -3,10 +3,14 @@
   class="rounded-lg dark:bg-midnight/70">
   <form [formGroup]="form" (ngSubmit)="onSubmit()" [ngClass]="{'lg:flex lg:items-center': shrink}">
     <div [ngClass]="onHomeScreen ? 'py-4' : 'py-2'">
-    <language-picker
-      class="shrink-0"
-      [selectedLangCode]="form.value.sourceLanguage"
-      (change)="onLanguageChange($event)"></language-picker>
+      <smart-dropdown
+            title="Language"
+            searchPlaceholder="Search languages..."
+            [(isOpen)]="isLanguagePickerOpen"
+            [noBackground]="true"
+            [items]="data.sourceLanguages"
+            (change)="onLanguageChange($event)">
+      </smart-dropdown>
     </div>
 
     <input type="hidden" formControlName="sourceLanguage">

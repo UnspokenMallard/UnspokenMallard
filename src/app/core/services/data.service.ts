@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
-import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from "@angular/router";
+import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from "@angular/router";
+import cloneDeep from "lodash-es/cloneDeep";
 import get from "lodash-es/get";
 import isEmpty from "lodash-es/isEmpty";
 import set from "lodash-es/set";
@@ -48,7 +49,11 @@ export class DataService implements Resolve<[Core.SelectableItem<Language.Result
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<[Core.SelectableItem<Language.Result>[], Link.Result[], Core.SelectableItem<Dictionary.Result>[]]> {
-    return forkJoin([this.listLanguages$(route), this.listLinks$(route), this.listDictionaries$({}, route)]).pipe(
+    return forkJoin([
+      this.listLanguages$().pipe(mergeMap(() => this.prepareLanguageData$(route))),
+      this.listLinks$(route),
+      this.listDictionaries$({}, route).pipe(mergeMap(() => this.prepareDictData$(route)))
+    ]).pipe(
       catchError(() => {
         return of([this.languages, this.links, this.dictionaries]) as Observable<[Core.SelectableItem<Language.Result>[], Link.Result[], Core.SelectableItem<Dictionary.Result>[]]>;
       }),
@@ -73,7 +78,7 @@ export class DataService implements Resolve<[Core.SelectableItem<Language.Result
       parameters.similarity = similarity;
     }
     this.localStorage.remove("links");
-    return this.fetchLinks$({...pathParameters}).pipe(
+    return this.fetchLinks$({...parameters}).pipe(
       mergeMap((results: Link.RawResult[]) => {
         return iif(() => isEmpty(results), throwError(() => new Error("No links were found")), of(results))
       }),
@@ -127,22 +132,22 @@ export class DataService implements Resolve<[Core.SelectableItem<Language.Result
     );
   }
 
+  prepareDictData$(route: ActivatedRouteSnapshot): Observable<Core.SelectableItem<Dictionary.Result>[]> {
+    const {sourceDict, targetDict } = route.queryParams;
+    this.sourceDictionaries = !!sourceDict ? cloneDeep(this.dictionaries).map((item) => {
+      item.selected = item.value.id === sourceDict;
+      return item;
+    }) : cloneDeep(this.dictionaries);
+    this.targetDictionaries = !!targetDict ? cloneDeep(this.dictionaries).map((item) => {
+      item.selected = item.value.id === targetDict;
+      return item;
+    }) : cloneDeep(this.dictionaries);
+    return of(this.dictionaries);
+  }
+
   listDictionaries$(parameters: Dictionary.Parameters = {}, route: ActivatedRouteSnapshot): Observable<Core.SelectableItem<Dictionary.Result>[]> {
     if (this.utils.isObjectEmpty(parameters) && !isEmpty(this.dictionaries)) {
-      return of(this.dictionaries).pipe(
-        tap((dictionaries) => {
-          this.dictionaries = dictionaries;
-          const {sourceDict, targetDict } = route.queryParams;
-          this.sourceDictionaries = !!sourceDict ? dictionaries.map((item) => {
-            item.selected = item.value.id === sourceDict;
-            return item;
-          }) : dictionaries;
-          this.targetDictionaries = !!targetDict ? dictionaries.map((item) => {
-            item.selected = item.value.id === targetDict;
-            return item;
-          }) : dictionaries;
-        })
-      );
+      return of(this.dictionaries).pipe();
     }
     return this.httpClient.post<Dictionary.ListResults>(this.apiUrl + "/api/listDict", {...parameters, ...this.defaultParameters}).pipe(
       map(({success, dictionaries, cached = false}) => {
@@ -179,15 +184,6 @@ export class DataService implements Resolve<[Core.SelectableItem<Language.Result
       }),
       tap((dictionaries) => {
         this.dictionaries = dictionaries;
-        const {sourceDict, targetDict} = route.queryParams;
-        this.sourceDictionaries = !!sourceDict ? dictionaries.map((item) => {
-          item.selected = item.value.id === sourceDict;
-          return item;
-        }) : dictionaries;
-        this.targetDictionaries = !!targetDict ? dictionaries.map((item) => {
-          item.selected = item.value.id === targetDict;
-          return item;
-        }) : dictionaries;
       })
     );
   }
@@ -226,17 +222,22 @@ export class DataService implements Resolve<[Core.SelectableItem<Language.Result
     )
   }
 
-  listLanguages$(route: ActivatedRouteSnapshot): Observable<Core.SelectableItem<Language.Result>[]> {
+  prepareLanguageData$(route: ActivatedRouteSnapshot): Observable<Core.SelectableItem<Language.Result>[]> {
+    const {sourceLanguage} = route.params;
+    const {targetLanguage} = route.queryParams;
+    this.targetLanguages = !!targetLanguage ? cloneDeep(this.languages).map((item) => {
+      item.selected = item.value.code === targetLanguage;
+      return item;
+    }) : cloneDeep(this.languages);
+    this.sourceLanguages = !!sourceLanguage ? cloneDeep(this.languages).map((item) => {
+      item.selected = item.value.code === sourceLanguage;
+      return item;
+    }) : cloneDeep(this.languages);
+    return of(this.languages);
+  }
+
+  listLanguages$(): Observable<Core.SelectableItem<Language.Result>[]> {
     if (this.languages.length > 0) {
-      const {targetLanguage, sourceLanguage} = route.queryParams;
-      this.targetLanguages = !!targetLanguage ? this.languages.map((item) => {
-        item.selected = item.value.code === targetLanguage;
-        return item;
-      }) : this.languages;
-      this.sourceLanguages = !!sourceLanguage ? this.languages.map((item) => {
-        item.selected = item.value.code === sourceLanguage;
-        return item;
-      }) : this.languages;
       return of(this.languages);
     }
     return this.httpClient.post<Language.ListResults>(this.apiUrl + "/api/listLang", this.defaultParameters ).pipe(
@@ -252,19 +253,14 @@ export class DataService implements Resolve<[Core.SelectableItem<Language.Result
         }) : [];
       }),
       tap((languages) => {
-        const {targetLanguage} = route.queryParams;
         this.languages = languages;
-        this.targetLanguages = !!targetLanguage ? languages.map((item) => {
-          item.selected = item.value.code === targetLanguage;
-          return item;
-        }) : languages;
       }),
       catchError(() => of([])),
     );
   }
 
   findLanguage$(code: string) {
-    return this.listLanguages$(this.route.snapshot).pipe(
+    return this.listLanguages$().pipe(
       map((languages) => {
         return languages.find((language) => language.value.code === code);
       })

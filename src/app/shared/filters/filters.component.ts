@@ -12,20 +12,20 @@ export class FiltersComponent implements OnInit {
    * The list of dictionaries that the user can select from.
    */
   @Input('dictionaries') dictionaries: Core.SelectableItem[] = [];
-  selectedDictionaries: Core.SelectableItem[] = [];
-  @Output('dictionariesChange') dictionariesChange = new EventEmitter<Core.SelectableItem<Dictionary.Result>[]>();
+  selectedDictionaries: Dictionary.Result[] = [];
+  @Output('dictionariesChange') dictionariesChange = new EventEmitter<Dictionary.Result[]>();
   /**
    * The languages that the user can select from.
    */
   @Input('languages') languages: Core.SelectableItem[] = [];
-  selectedLanguages: Core.SelectableItem[] = [];
-  @Output('languagesChange') languagesChange = new EventEmitter<Core.SelectableItem<Language.Result>[]>();
+  selectedLanguages: Language.Result[] = [];
+  @Output('languagesChange') languagesChange = new EventEmitter<Language.Result[]>();
   /**
    * The list of similarities to display.
    */
   @Input('similarities') similarities: Core.SelectableItem[] = [];
-  selectedSimilarities: Core.SelectableItem[] = [];
-  @Output('similaritiesChange') similaritiesChange = new EventEmitter<Core.SelectableItem<Similarity.Result>[]>();
+  selectedSimilarities: Similarity.Result[] = [];
+  @Output('similaritiesChange') similaritiesChange = new EventEmitter<Similarity.Result[]>();
 
   @Input('showConceptViewToggle') showConceptViewToggle = false
 
@@ -53,19 +53,19 @@ export class FiltersComponent implements OnInit {
     this.checkClearButton()
   }
 
-  onLanguagesChange(items: Core.SelectableItem<Language.Result>[]) {
+  onLanguagesChange(items: Language.Result[]) {
     this.selectedLanguages = items;
     this.languagesChange.emit(items);
     this.checkClearButton();
   }
 
-  onDictionariesChange(items: Core.SelectableItem<Dictionary.Result>[]) {
+  onDictionariesChange(items: Dictionary.Result[]) {
     this.selectedDictionaries = items;
     this.dictionariesChange.emit(items);
     this.checkClearButton();
   }
 
-  onSimilaritiesChange(items: Core.SelectableItem<Similarity.Result>[]) {
+  onSimilaritiesChange(items: Similarity.Result[]) {
     this.selectedSimilarities = items;
     this.similaritiesChange.emit(items);
     this.checkClearButton();

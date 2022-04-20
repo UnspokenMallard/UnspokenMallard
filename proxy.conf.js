@@ -8,13 +8,6 @@ const PROXY_CONFIG = {
     "secure": true,
     "timeout": 30000,
     "changeOrigin": true,
-    "bypass": (req, res) => {
-      if (req.url === "/api/listDict") {
-        var responseDictionaries = require("./src/assets/dictionaries.json");
-        res.end(JSON.stringify(responseDictionaries));
-        return true;
-      }
-    },
     "logLevel": "debug"
   },
   "/*.json": {

@@ -1,43 +1,56 @@
-import {Component, ElementRef, Input, OnInit, AfterViewInit, ViewChild, Inject} from '@angular/core';
-import {faSearch, faTimes} from "@fortawesome/free-solid-svg-icons";
-import {FormBuilder} from "@angular/forms";
-import {ActivatedRoute, NavigationExtras, Router} from "@angular/router";
-import { DataService } from "src/app/core/services/data.service";
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnInit,
+  AfterViewInit,
+  ViewChild,
+} from '@angular/core';
+import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { FormBuilder } from '@angular/forms';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
+import { DataService } from 'src/app/core/services/data.service';
+import first from 'lodash-es/first';
+import get from 'lodash-es/get';
 
 @Component({
   selector: 'search-box',
   templateUrl: './search-box.component.html',
-  styleUrls: ['./search-box.component.scss']
+  styleUrls: ['./search-box.component.scss'],
 })
 export class SearchBoxComponent implements OnInit, AfterViewInit {
-
-  @Input('onHomeScreen') onHomeScreen: boolean = false
-  @Input('shrink') shrink: boolean = false
+  @Input('onHomeScreen') onHomeScreen: boolean = false;
+  @Input('shrink') shrink: boolean = false;
 
   @ViewChild('input') inputElement!: ElementRef;
-
-  faSearch = faSearch
-  faTimes = faTimes
+  isLanguagePickerOpen!: boolean;
+  sourceLanguage!: Language.Result;
+  faSearch = faSearch;
+  faTimes = faTimes;
 
   form = this.formBuilder.group({
     sourceLanguage: '',
-    headword: ''
+    headword: '',
   });
 
   constructor(
     private formBuilder: FormBuilder,
     public data: DataService,
     private router: Router,
-    private route: ActivatedRoute,
-  ) {
-  }
+    private route: ActivatedRoute
+  ) {}
 
-  onLanguageChange(lang: Core.SelectableItem<Language.Result>): void {
-    this.form.patchValue({'sourceLanguage': lang.value.code})
+  onLanguageChange(lang: Language.Result[]): void {
+    this.sourceLanguage = first(lang) as Language.Result;
+    this.form.patchValue({ sourceLanguage: get(this.sourceLanguage, 'code', '') });
   }
 
   onSubmit(): void {
-    if (this.form.value.sourceLanguage && this.form.value.headword) {
+    if (
+      !this.isLanguagePickerOpen &&
+      this.form.value.sourceLanguage &&
+      this.form.value.headword
+    ) {
       let parameters = {} as Link.Parameters;
       if (!!this.data.sourceDict) {
         parameters.sourceDict = this.data.sourceDict;
@@ -54,13 +67,15 @@ export class SearchBoxComponent implements OnInit, AfterViewInit {
       const config = {
         queryParams: parameters,
       } as NavigationExtras;
-      this.router.navigate(['links', this.form.value.sourceLanguage, this.form.value.headword], config);
+      this.router.navigate(
+        ['links', this.form.value.sourceLanguage, this.form.value.headword],
+        config
+      );
     }
-
   }
 
   clear(): void {
-    this.form.patchValue({'headword': ''});
+    this.form.patchValue({ headword: '' });
     this.inputElement.nativeElement.focus();
   }
 
@@ -70,17 +85,24 @@ export class SearchBoxComponent implements OnInit, AfterViewInit {
     const langFromRoute = routeParams.get('sourceLanguage');
 
     if (headwordFromRoute) {
-      this.form.patchValue({'headword': headwordFromRoute})
+      this.form.patchValue({ headword: headwordFromRoute });
     }
 
     if (langFromRoute) {
-      this.form.patchValue({'sourceLanguage': langFromRoute})
+      for (const language of this.data.sourceLanguages) {
+        if (language.value.code === langFromRoute) {
+          language.selected = true;
+          this.sourceLanguage = language.value;
+          break;
+        }
+      }
+      this.form.patchValue({ sourceLanguage: langFromRoute });
     }
   }
 
   ngAfterViewInit(): void {
     if (this.onHomeScreen) {
-      this.inputElement.nativeElement.focus()
+      this.inputElement.nativeElement.focus();
     }
   }
 }

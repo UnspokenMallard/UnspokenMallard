@@ -4,8 +4,10 @@
   "scripts": {
     "ng": "ng",
     "start": "cross-env CONFIG=testing node server.js",
+    "start:dev": "cross-env CONFIG=development node server.js",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
+    "watch:dev": "ng build --watch --configuration development",
     "watch:test": "ng build --watch --configuration testing",
     "watch:prod": "ng build --watch --configuration production",
     "test": "ng test",
