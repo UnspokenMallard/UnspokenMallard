@@ -1,20 +1,18 @@
 <div
   [ngClass]="onHomeScreen ? 'shadow-xl bg-white' : 'shadow bg-white/60'"
   class="rounded-lg dark:bg-midnight/70">
+  <div [ngClass]="onHomeScreen ? 'py-4' : 'py-2'">
+    <smart-dropdown
+          title="Language"
+          searchPlaceholder="Search languages..."
+          [(isOpen)]="isLanguagePickerOpen"
+          [noBackground]="true"
+          [items]="data.sourceLanguages"
+          (change)="onLanguageChange($event)">
+    </smart-dropdown>
+  </div>
   <form [formGroup]="form" (ngSubmit)="onSubmit()" [ngClass]="{'lg:flex lg:items-center': shrink}">
-    <div [ngClass]="onHomeScreen ? 'py-4' : 'py-2'">
-      <smart-dropdown
-            title="Language"
-            searchPlaceholder="Search languages..."
-            [(isOpen)]="isLanguagePickerOpen"
-            [noBackground]="true"
-            [items]="data.sourceLanguages"
-            (change)="onLanguageChange($event)">
-      </smart-dropdown>
-    </div>
-
     <input type="hidden" formControlName="sourceLanguage">
-
     <hr class="border-lightgray dark:border-darkgray/60" [ngClass]="{'lg:hidden': shrink}">
 
     <div [ngClass]="{'flex items-center pr-4 py-2': !onHomeScreen}" class="flex-1">
