@@ -113,7 +113,9 @@ export class DataService implements Resolve<[Core.SelectableItem<Language.Result
               result.source = [this.transformToSourceLink(link)];
             }
             // Transform it to meta data for dictionary, due to the fact it's lost otherwise
-            result.concept = this.transformToTargetLink(link)
+            if (link.targetDictConcept) {
+              result.concept = this.transformToTargetLink(link)
+            }
             if (!!link.targetConnectedLinks) {
               result.target = link.targetConnectedLinks.map((childLink) => {
                 return this.transformToTargetLink(childLink);

@@ -1,5 +1,7 @@
+import { CdkOverlayOrigin } from "@angular/cdk/overlay";
 import {
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnChanges,
@@ -7,6 +9,7 @@ import {
   OnInit,
   Output,
   SimpleChanges,
+  ViewChild,
 } from '@angular/core';
 import { faSquare, faSquareCheck } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -37,16 +40,18 @@ export class SmartDropdownComponent implements OnInit, OnDestroy, OnChanges {
   @Output('change') change = new EventEmitter<any[]>();
 
   @Input('isOpen') isOpen = false;
+  @Input('fullTriggerWidth') fullTriggerWidth = false;
   @Output('isOpenChange') isOpenChange: EventEmitter<boolean> = new EventEmitter();
-
+  @ViewChild('trigger') trigger!: CdkOverlayOrigin;
+  triggerRect!: DOMRect;
   filteredItems: Core.SelectableItem[] = [];
+  selectedItems: Core.SelectableItem[] = [];
 
   text$: Subject<string> = new Subject<string>();
 
   search$: Observable<string>;
 
   selectedValues: any[] = [];
-
 
   q = '';
 
@@ -77,6 +82,7 @@ export class SmartDropdownComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnInit(): void {
+    this.selectedItems = cloneDeep(this.items.filter((s) => s.selected));
     this.search$.subscribe((value) => {
       this.filteredItems = this.filter(value);
     });
@@ -84,7 +90,7 @@ export class SmartDropdownComponent implements OnInit, OnDestroy, OnChanges {
 
   get selectedTitle() {
     if (this.singleItemMode) {
-      const selectedTitle = this.selected.length === 1 ? this.selected[0].label : "";
+      const selectedTitle = this.selectedItems.length === 1 ? this.selectedItems[0].label : "";
       return selectedTitle.length > 0 ? selectedTitle : this.title;
     } else {
       return this.title;
@@ -96,35 +102,39 @@ export class SmartDropdownComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   toggleMenu() {
+    if (this.fullTriggerWidth) {
+      this.triggerRect = this.trigger.elementRef.nativeElement.parentElement.parentElement.getBoundingClientRect();
+    }
     this.isOpen = !this.isOpen;
     this.isOpenChange.emit(this.isOpen);
   }
 
   toggleItem(item: Core.SelectableItem) {
-    if (this.singleItemMode && this.isSelected(item)) return;
-    item.selected = !item.selected;
-    for (const selectableItem of this.items) {
-      if (selectableItem.label === item.label) {
-        selectableItem.selected = item.selected;
-      }
+    for (const selectableItem of this.filteredItems) {
+      selectableItem.selected = selectableItem.label === item.label ? !item.selected : false;
     }
+    for (const selectableItem of this.items) {
+      selectableItem.selected = selectableItem.label === item.label ? item.selected : false;
+    }
+
     const items = this.filteredItems.filter((s) => s.selected).map((s) => s.value);
+    this.selectedItems = cloneDeep(this.filteredItems.filter((s) => s.selected));
     this.change.emit(items);
+    if (this.singleItemMode) {
+      this.isOpen = false;
+      this.isOpenChange.emit(false);
+    }
   }
 
   isSelected(item: Core.SelectableItem) {
     if (!this.singleItemMode) return false;
-    return !item.selected && this.selected.length === 1;
+    return !item.selected && this.selectedItems.length === 1;
   }
 
   filter(query: string) {
     return this.items.filter((s) => {
       return s.label.toLowerCase().indexOf(query.toLowerCase()) !== -1;
     });
-  }
-
-  get selected() {
-    return this.filteredItems.filter((s) => s.selected);
   }
 
   close() {

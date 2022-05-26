@@ -43,6 +43,7 @@ export class SearchBoxComponent implements OnInit, AfterViewInit {
   onLanguageChange(lang: Language.Result[]): void {
     this.sourceLanguage = first(lang) as Language.Result;
     this.form.patchValue({ sourceLanguage: get(this.sourceLanguage, 'code', '') });
+    this.form.value.sourceLanguage ? this.form.enable() : this.form.disable();
   }
 
   onSubmit(): void {
@@ -67,10 +68,7 @@ export class SearchBoxComponent implements OnInit, AfterViewInit {
       const config = {
         queryParams: parameters,
       } as NavigationExtras;
-      this.router.navigate(
-        ['links', this.form.value.sourceLanguage, this.form.value.headword],
-        config
-      );
+      this.router.navigate(['links', this.form.value.sourceLanguage, this.form.value.headword], config);
     }
   }
 
@@ -83,7 +81,9 @@ export class SearchBoxComponent implements OnInit, AfterViewInit {
     const routeParams = this.route.snapshot.paramMap;
     const headwordFromRoute = routeParams.get('headword');
     const langFromRoute = routeParams.get('sourceLanguage');
-
+    if (this.onHomeScreen && !headwordFromRoute) {
+      this.form.disable();
+    }
     if (headwordFromRoute) {
       this.form.patchValue({ headword: headwordFromRoute });
     }
